@@ -4,11 +4,13 @@ package object cl {
 
     // Given a term M and variable x, M.extract(x) returns a term
     // without x, M', s.t. (M' * x) evaluates the same way as M
-    //def extract(x: Var): Term = this match {
-    //  case a: Atom if a != x => K * a
-    //  case a: Atom if a == x => I
-    //  case l * r => S * l.extract(x) * r.extract(x)
-    //}
+    /*
+    def extract(x: Var): Term = this match {
+      case a: Atom if a != x => K * a
+      case a: Atom if a == x => I
+      case l * r => S * l.extract(x) * r.extract(x)
+    }
+    */
     def extract(x: Var): Term = extractC(x)
 
     // Implements Algorithm (C)
@@ -29,7 +31,6 @@ package object cl {
         C * g.extractC(x) * e
       case (g : Term) * (h : Term) if g.contains(x) && h.contains(x) =>
         S * g.extractC(x) * h.extractC(x)
-
     }
 
     def contains(x: Var): Boolean = this match {
@@ -58,6 +59,8 @@ package object cl {
     case C * p * q * r => p * r * q
     case S * p * q * r => p * r * (q * r)
     case W * p * q => p * q * q
+    //Y = \lambda f.(\lambda x.f\ (x\ x))\ (\lambda x.f\ (x\ x))
+    //case Y * g => (('f * 'x * 'x).extract('x) * ('f * 'x * 'x).extract('x)).extract('f)
     case Bp * p * q * r * s => p * q * (r * s)
     case Cp * p * q * r * s => p * (q * s) * r
     case Sp * p * q * r * s => p * (q * s) * (r * s)
@@ -89,7 +92,7 @@ package object cl {
   case object Bp extends Const
   case object Cp extends Const
   case object Sp extends Const
-  case object Y extends Const
+  //case object Y extends Const
 
   case class Var(name: String) extends Atom {
     override def toString = name
