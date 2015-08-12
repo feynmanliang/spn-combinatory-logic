@@ -61,7 +61,6 @@ object Tests extends TestSuite {
     }
 
     "reduction"-{
-      /*
       "Evaluation is complete when..."-{
         "...the term begins with a var"-{
           val vars = s*s*s*s*s*s
@@ -94,19 +93,18 @@ object Tests extends TestSuite {
         // NOTE: Implementing head reduction separately is optional,
         // but could be a helpful first step.
         assert(
-          //evalHead(K * p * q * r * s) == p * r * s,
-          //evalHead(K * p * q * K * p * q) == p * K * p * q,
-          //evalHead(K * I * p * q) == I * q
+          evalHead(K * p * q * r * s) == p * r * s,
+          evalHead(K * p * q * K * p * q) == p * K * p * q,
+          evalHead(K * I * p * q) == I * q
         )
       }
 
       "step by step reduction"-{
-        /*assert(
-          evalHead(S * (K * S) * K * p * q * r) == (S * (K * S) * K * p * q * r),
+        assert(
           evalHead(K * S * p * (K * p) * q * r) == (S * (K * p) * q * r),
           evalHead(S * (K * p) * q * r)         == (K * p * r * (q * r)),
           evalHead(K * p * r * (q * r))         == (p * (q * r))
-        )*/
+        )
       }
 
       "complete reduction"-{
@@ -117,6 +115,7 @@ object Tests extends TestSuite {
           eval(S*(K*S)*K * (S*(K*S)*K * S) * (S*(K*S)*K) * K * (S*K*K) * I * s) == s
         )
       }
+      /*
        */
     }
 

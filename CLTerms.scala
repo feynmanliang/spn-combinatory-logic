@@ -10,7 +10,11 @@ package object cl {
       case l * r => S * l.extract(x) * r.extract(x)
     }
 
-    def contains(x: Var): Boolean = ???
+    def contains(x: Var): Boolean = this match {
+      case y : Const => false
+      case y : Var => x == y
+      case *(y,z) => y.contains(x) || z.contains(x)
+    }
   }
 
   case class *(left: Term, right: Term) extends Term {
@@ -20,7 +24,26 @@ package object cl {
     }
   }
 
-  def eval(t: Term): Term = ???
+  def eval(t: Term): Term = {
+    if (evalHead(t) == t) t
+    else eval(evalHead(t))
+  }
+
+  def evalHead(t: Term): Term = t match {
+    case I * p => p
+    case K * p * q => p
+    case B * p * q * r => p * (q * r)
+    case C * p * q * r => p * r * q
+    case S * p * q * r => p * r * (q * r)
+    case W * p * q => p * q * q
+    case Bp * p * q * r * s => p * q * (r * s)
+    case Cp * p * q * r * s => p * (q * s) * r
+    case Sp * p * q * r * s => p * (q * s) * (r * s)
+    case x : Const => x
+    case x : Var => x
+    case (x : Var) * xs => x * xs
+    case (x : Term) * xs => eval(x) * eval(xs)
+  }
 
   def bracketAbstraction(f: Term => Term): Term = {
     val x = Var("variable")
