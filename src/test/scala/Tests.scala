@@ -115,12 +115,9 @@ object Tests extends TestSuite {
           eval(S*(K*S)*K * (S*(K*S)*K * S) * (S*(K*S)*K) * K * (S*K*K) * I * s) == s
         )
       }
-      /*
-       */
     }
 
     "bracket abstraction"-{
-      /*
       val TRUE = K
       val FALSE = K*I
 
@@ -194,7 +191,6 @@ object Tests extends TestSuite {
           !evalBool(OR * FALSE * FALSE)
         )
       }
-      */
     }
   }
 }

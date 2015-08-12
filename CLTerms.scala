@@ -4,10 +4,32 @@ package object cl {
 
     // Given a term M and variable x, M.extract(x) returns a term
     // without x, M', s.t. (M' * x) evaluates the same way as M
-    def extract(x: Var): Term = this match {
-      case a: Atom if a != x => K * a
-      case a: Atom if a == x => I
-      case l * r => S * l.extract(x) * r.extract(x)
+    //def extract(x: Var): Term = this match {
+    //  case a: Atom if a != x => K * a
+    //  case a: Atom if a == x => I
+    //  case l * r => S * l.extract(x) * r.extract(x)
+    //}
+    def extract(x: Var): Term = extractC(x)
+
+    // Implements Algorithm (C)
+    // @see http://www.cantab.net/users/antoni.diller/brackets/intro.html
+    def extractC(x: Var): Term = this match {
+      case (e : Term) if !e.contains(x) => K * e
+      case (y : Var) if y == x => I
+      case (e : Term) * (y : Var) if !e.contains(x) && y == x => e
+      case (e : Term) * (f : Term) * (g : Term) if !e.contains(x) && !f.contains(x) && g.contains(x) =>
+        Bp * e * f * g.extractC(x)
+      case (e : Term) * (g : Term) * (f : Term) if !e.contains(x) && !f.contains(x) && g.contains(x) =>
+        Cp * e * g.extractC(x) * f
+      case (e : Term) * (g : Term) * (h : Term) if !e.contains(x) && g.contains(x) && h.contains(x) =>
+        Sp * e * g.extractC(x) * h.extractC(x)
+      case (e : Term) * (g : Term) if !e.contains(x) && g.contains(x) =>
+        B * e * g.extractC(x)
+      case (g : Term) * (e : Term) if !e.contains(x) && g.contains(x) =>
+        C * g.extractC(x) * e
+      case (g : Term) * (h : Term) if g.contains(x) && h.contains(x) =>
+        S * g.extractC(x) * h.extractC(x)
+
     }
 
     def contains(x: Var): Boolean = this match {
@@ -67,6 +89,7 @@ package object cl {
   case object Bp extends Const
   case object Cp extends Const
   case object Sp extends Const
+  case object Y extends Const
 
   case class Var(name: String) extends Atom {
     override def toString = name
