@@ -60,14 +60,14 @@ package object cl {
     case S * p * q * r => p * r * (q * r)
     case W * p * q => p * q * q
     //Y = \lambda f.(\lambda x.f\ (x\ x))\ (\lambda x.f\ (x\ x))
-    //case Y * g => (('f * 'x * 'x).extract('x) * ('f * 'x * 'x).extract('x)).extract('f)
+    case Y * f => f * Y * f
     case Bp * p * q * r * s => p * q * (r * s)
     case Cp * p * q * r * s => p * (q * s) * r
     case Sp * p * q * r * s => p * (q * s) * (r * s)
     case x : Const => x
     case x : Var => x
     case (x : Var) * xs => x * xs
-    case (x : Term) * xs => eval(x) * eval(xs)
+    case (x : Term) * xs => eval(x) * xs
   }
 
   def bracketAbstraction(f: Term => Term): Term = {
@@ -92,7 +92,7 @@ package object cl {
   case object Bp extends Const
   case object Cp extends Const
   case object Sp extends Const
-  //case object Y extends Const
+  case object Y extends Const
 
   case class Var(name: String) extends Atom {
     override def toString = name
